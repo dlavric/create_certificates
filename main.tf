@@ -17,10 +17,16 @@ resource "acme_certificate" "certificate" {
   subject_alternative_names    = ["daniela-k8s.${data.aws_route53_zone.zone.name}"]
   recursive_nameservers        = ["8.8.8.8:53"]
   disable_complete_propagation = true
+  depends_on                   = [acme_registration.reg]
 
   dns_challenge {
     provider = "route53"
+    config = {
+      AWS_HOSTED_ZONE_ID = data.aws_route53_zone.zone.zone_id
+    }
   }
+
+
 }
 
 resource "aws_acm_certificate" "certificate" {
